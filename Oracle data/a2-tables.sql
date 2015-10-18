@@ -7,8 +7,10 @@
   drop table sch_flights;
   drop table flights;
   drop table airports;
-  drop view good_connections;
-  drop view available_flights;
+  drop table airline_agents;
+  drop table users;
+ -- drop view good_connections;
+  --drop view available_flights;
 
 create table airports (
   acode		char(3),
@@ -64,7 +66,8 @@ create table tickets (
   email		char(20),
   paid_price	float,
   primary key (tno),
-  foreign key (name,email) references passengers
+  foreign key (email) references passengers,
+  foreign key (name) references passengers
 );
 create table bookings (
   tno		int,
@@ -89,5 +92,5 @@ create table users(
   pass      char(20),
   last_login	date,
   primary key (email)
-)
+);
 
