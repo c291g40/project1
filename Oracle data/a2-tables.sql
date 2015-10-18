@@ -1,16 +1,14 @@
 -- Drop tables and views first (in case they are there)
+  drop table airline_agents;
   drop table bookings;
   drop table tickets;
   drop table passengers;
+  drop table users;
   drop table flight_fares;
   drop table fares;
   drop table sch_flights;
   drop table flights;
   drop table airports;
-  drop table airline_agents;
-  drop table users;
- -- drop view good_connections;
-  --drop view available_flights;
 
 create table airports (
   acode		char(3),
@@ -54,20 +52,25 @@ create table flight_fares (
   foreign key (flightno) references flights,
   foreign key (fare) references fares
 );
+create table users (
+  email         char(20),
+  pass		char(4),
+  last_login	date,
+  primary key (email)
+);
 create table passengers (
   email		char(20),
   name		char(20),
   country	char(10),
-  primary key (email)
+  primary key (email,name)
 );
 create table tickets (
   tno		int,
-  name      char(20),
+  name		char(20),
   email		char(20),
   paid_price	float,
   primary key (tno),
-  foreign key (email) references passengers,
-  foreign key (name) references passengers
+  foreign key (email,name) references passengers
 );
 create table bookings (
   tno		int,
@@ -80,17 +83,9 @@ create table bookings (
   foreign key (flightno,dep_date) references sch_flights,
   foreign key (fare) references fares
 );
-
-create table airline_agents(
-  email		char(20),
-  name      char(20),
-  primary key (email)
+create table airline_agents (
+  email         char(20),
+  name		char(20),
+  primary key (email),
+  foreign key (email) references users
 );
-
-create table users(
-  email		char(20),
-  pass      char(20),
-  last_login	date,
-  primary key (email)
-);
-
