@@ -44,13 +44,6 @@ class SplashScreen:
 		
 	def getPassword(self):
 		return self.password;
-	
-#class SearchForFlight:
-
-
-#class Bookings:
-	
-
 
 ##splash screen stuff
 ss = SplashScreen();

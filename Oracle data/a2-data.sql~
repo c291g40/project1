@@ -2,9 +2,9 @@
 	Data Prepared by Connor Resler, resler@ualberta.ca, published on October 6, 2015
 */
 
-insert into airports values ('YEG','Edmonton International Airport','Edmonton', 'Canada',-7);
-insert into airports values ('YYZ','Pearson International Airport','Toronto', 'Canada',-5);
-insert into airports values ('YUL','Trudeau International Airport','Montreal', 'Canada',-5);
+insert into airports values ('YEG','Edmonton Internatioanl Airport','Edmonton', 'Canada',-7);
+insert into airports values ('YYZ','Pearson Internatioanl Airport','Toronto', 'Canada',-5);
+insert into airports values ('YUL','Trudeau Internatioanl Airport','Montreal', 'Canada',-5);
 insert into airports values ('YVR','Vancouver Airport','Vancouver', 'Canada',-8);
 insert into airports values ('LAX','LA Airport','Los Angeles', 'US',-8);
 insert into airports values ('MOS','Tatooine Airport','Mos Eisley', 'Tatooine',-8);
