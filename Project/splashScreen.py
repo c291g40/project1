@@ -1,58 +1,84 @@
-import sys;
-import cx_Oracle;
+import sys
+import cx_Oracle
 
 class SplashScreen:
-	email = "";
-	password = "";
-	logoutTime = "";
-	userVerified = False;
-	isAgent = False;
+	#Home
+	#Lab
+	connectionString = "eorodrig/pass@gwynne.cs.ualberta.ca:1521/CRS"
+	email = ""
+	password = ""
+	logoutTime = ""
+	userVerified = False
+	isAgent = False
 
 	def start(self):
 		while(self.userVerified == False):
-			print("Welcome to group 40's airline ticket system");
-			userInput = input("Please select an option: Login, Register, Exit:");
+			print("Welcome to group 40's airline ticket system")
+			userInput = input("Please select an option: Login, Register, Exit:")
 			if(userInput.lower()=="exit"):
-				self.userVerified = True;
-				exit();
+				self.userVerified = True
+				exit()
 			elif(userInput.lower()=="register"):
-				self.userVerified = self.registerUser();
+				self.userVerified = self.registerUser()
 				
 			elif(userInput.lower()=="login"):
-				self.userVerified = self.userSignin();
+				self.userVerified = self.userSignin()
 				
 			else:
-				self.userVerified = False;
-				print("\ninvalid User Input. Please select a valid input.");
-		return self.userVerified;
+				self.userVerified = False
+				print("\ninvalid User Input. Please select a valid input.")
+		return self.userVerified
 
 	
 
 	def userSignin(self):
-		self.email = input("Please enter your email address: ");
-		self.password = input("Please enter your password: ");
+		self.email = input("Please enter your email address: ")
+		self.password = input("Please enter your password: ")
 		
-		print("Login Successful, Type logout at anytime to logout of your account.");
-		return True;
+		connection = cx_Oracle.connect(self.connectionString)
+		
+		curs = connection.cursor()
+		
+		curs.execute("SELECT pass from users where email = \'eorodrig@ualberta.ca\'")
+		
+		curs.close()
+		
+		connection.close()				
+		
+		print("Login Successful, Type logout at anytime to logout of your account.")
+		return True
 	
 	
 	
 
 	def registerUser(self):
-		self.email = input("Please enter an email address: ");
-		self.password = input("Please enter a password: ");
+		self.email = input("Please enter an email address: ")
+		self.password = input("Please enter a password: ")
 		
-		print("Account created. Type logout at anytime to logout of your account.");
-		return True;
+		print("Account created. Type logout at anytime to logout of your account.")
+		return True
 
 	def getEmail(self):
-		return self.email;
+		return self.email
 		
 	def getPassword(self):
-		return self.password;
+		return self.password
 	
 	def logOut(self):
-		self.userVerified = False;
+		self.userVerified = False
 		
 	def isAgent(self):
-		return self.isAgent;
+		return self.isAgent
+		
+		
+		
+		
+		
+		
+		
+	
+	
+	
+	
+	
+	
