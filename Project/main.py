@@ -2,6 +2,7 @@ import sys;
 import cx_Oracle;
 import test;
 import splashScreen;
+import search;
 
 ##splash screen stuff
 
