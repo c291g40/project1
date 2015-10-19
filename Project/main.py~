@@ -16,6 +16,7 @@ import splashScreen;
 ##splash screen stuff
 
 ss = splashScreen.SplashScreen();
+ss.start();
 
 
 #while(authenticated == True):

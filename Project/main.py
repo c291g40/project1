@@ -2,16 +2,6 @@ import sys;
 import cx_Oracle;
 import test;
 import splashScreen;
-#from splashScreen import *;
-
-
-	
-#class SearchForFlight:
-
-
-#class Bookings:
-	
-
 
 ##splash screen stuff
 
