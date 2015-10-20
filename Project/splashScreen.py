@@ -10,7 +10,7 @@ class SplashScreen:
 	password = ""
 	logoutTime = ""
 	userVerified = False
-	isAgent = False
+	isAirlineAgent = False
 
 	def start(self):
 		while(self.userVerified == False):
@@ -37,12 +37,19 @@ class SplashScreen:
 		self.email = input("Please enter your email address: ")
 		self.password = input("Please enter your password: ")
 		
-		query = "SELECT pass from users where email=:userEmail"
+		query = "SELECT pass FROM users WHERE email=:u_email"
 		
 		connection = cx_Oracle.connect(self.connectionString)
 		curs = connection.cursor()
-		curs.execute(query, userEmail=self.email)
+		#curs.prepare(query)
+		#curs.execute(None, {'uemail':self.email})
+		curs.execute(query, u_email=self.email)
 		rows = curs.fetchone()
+		
+		print(self.email)
+		print(curs.rowcount)
+		print(rows)
+		
 		
 		if (curs.rowcount ==0):
 			curs.close()
@@ -56,12 +63,27 @@ class SplashScreen:
 		
 			if (testing==self.password):
 				print("Login Successful, Type logout at anytime to logout of your account.")
+				self.checkIfAgent()
 				return True
 			else:
-				print("Login failed. Invalid email or password.")
+				print("Login failed. Invalid email or password!.")
 				return False
 	
 	
+	def checkIfAgent(self):
+		query = "SELECT email from airline_agents where email=:userEmail"
+		
+		connection = cx_Oracle.connect(self.connectionString)
+		curs = connection.cursor()
+		curs.execute(query, userEmail=self.email)
+		rows = curs.fetchone()
+		
+		if (curs.rowcount ==0):
+			self.isAirlineAgent = False;
+		else:
+			self.isAirlineAgent = True;
+		curs.close()
+		connection.close()			
 	
 
 	def registerUser(self):
@@ -110,7 +132,7 @@ class SplashScreen:
 		self.userVerified = False
 		
 	def isAgent(self):
-		return self.isAgent
+		return self.isAirlineAgent
 		
 		
 		

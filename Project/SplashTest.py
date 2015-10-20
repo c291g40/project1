@@ -14,5 +14,7 @@ email = ss.getEmail();
 password = ss.getPassword();
 isAgent = ss.isAgent();
 	
-	
-
+if(isAgent):
+	print("hello agent")
+else:
+	print("hello user")
