@@ -66,10 +66,39 @@ class SplashScreen:
 
 	def registerUser(self):
 		self.email = input("Please enter an email address: ")
-		self.password = input("Please enter a password: ")
+		self.password = input("Please enter a 4 character password: ")
+		invalidPass = True
 		
-		print("Account created. Type logout at anytime to logout of your account.")
-		return True
+		while(1):
+			if (len(self.password)<=4):
+				break
+			else:
+				self.password = input("Invalid Password. Please enter a password with a maximum lenght of 4 characters:")
+		
+		query = "SELECT email from users where email=:userEmail"
+		insertquery = "INSERT into users(email, pass) values(:userEmail, :userPass)"
+		
+		connection = cx_Oracle.connect(self.connectionString)
+		curs = connection.cursor()
+		curs.execute(query, userEmail=self.email)
+		rows = curs.fetchone()
+		
+		if (curs.rowcount ==0):
+			curs.execute(insertquery, userEmail=self.email, userPass=self.password)
+			connection.commit()
+			curs.close()
+			connection.close()	
+			print("Account created. Type logout at anytime to logout of your account.")
+			return True
+			
+		else:
+			curs.close()
+			connection.close()				
+			print("Account could not be created. Email already exists in the system.")
+			return False
+			
+				
+
 
 	def getEmail(self):
 		return self.email
