@@ -3,8 +3,9 @@ import cx_Oracle
 
 class SplashScreen:
 	#Home
+	connectionString = "eorodrig/pass@localhost:1521/XE"
 	#Lab
-	connectionString = "eorodrig/pass@gwynne.cs.ualberta.ca:1521/CRS"
+	#connectionString = "eorodrig/pass@gwynne.cs.ualberta.ca:1521/CRS"
 	email = ""
 	password = ""
 	logoutTime = ""
@@ -30,23 +31,35 @@ class SplashScreen:
 		return self.userVerified
 
 	
-
+	#variables used in sql example from:
+	#http://stackoverflow.com/questions/13650632/user-input-variables-in-cx-oracle
 	def userSignin(self):
 		self.email = input("Please enter your email address: ")
 		self.password = input("Please enter your password: ")
 		
+		query = "SELECT pass from users where email=:userEmail"
+		
 		connection = cx_Oracle.connect(self.connectionString)
-		
 		curs = connection.cursor()
+		curs.execute(query, userEmail=self.email)
+		rows = curs.fetchone()
 		
-		curs.execute("SELECT pass from users where email = \'eorodrig@ualberta.ca\'")
+		if (curs.rowcount ==0):
+			curs.close()
+			connection.close()
+			print("Login failed. Invalid email or password.")
+			return False
+		else:
+			testing = rows[0]
+			curs.close()
+			connection.close()				
 		
-		curs.close()
-		
-		connection.close()				
-		
-		print("Login Successful, Type logout at anytime to logout of your account.")
-		return True
+			if (testing==self.password):
+				print("Login Successful, Type logout at anytime to logout of your account.")
+				return True
+			else:
+				print("Login failed. Invalid email or password.")
+				return False
 	
 	
 	
