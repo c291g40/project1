@@ -1,4 +1,11 @@
-This is the readme file for the first project assignment in c291.
+This is the readme file for the first project assignment in c291.  
 
-If we wish to do this in python, be sure to install cx_oracle and test it to make sure it works properly.
-If we wish to do this in java, please download the jar file from the oracle website.
+INFO:  
+assuming that you used default settings for installing oracle at home, this should be your connection string:
+connectionString = "username/password@localhost:1521/XE"  
+
+TIME:  
+Edwin:  
+    Worked on SplashScreen stuff (2hrs + 2.5hrs) (oct 20)  
+Mustafa:  
+    Worked on Search: Requirement1 ( X hrs) (oct 20)  
