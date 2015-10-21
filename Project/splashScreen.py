@@ -3,7 +3,7 @@ import cx_Oracle
 
 class SplashScreen:
 	#Home
-	connectionString = "eorodrig/pass@localhost:1521/XE"
+	connectionString = "eorodrig/Lionheart1@localhost:1521/XE"
 	#Lab
 	#connectionString = "eorodrig/pass@gwynne.cs.ualberta.ca:1521/CRS"
 	email = ""
@@ -34,8 +34,9 @@ class SplashScreen:
 	#variables used in sql example from:
 	#http://stackoverflow.com/questions/13650632/user-input-variables-in-cx-oracle
 	def userSignin(self):
-		self.email = input("Please enter your email address: ")
+		self.email = input("Please enter your email address: ").lower()
 		self.password = input("Please enter your password: ")
+		
 		
 		query = "SELECT pass FROM users WHERE email=:u_email"
 		
@@ -43,7 +44,7 @@ class SplashScreen:
 		curs = connection.cursor()
 		#curs.prepare(query)
 		#curs.execute(None, {'uemail':self.email})
-		curs.execute(query, u_email=self.email)
+		curs.execute(query, u_email=self.email.ljust(20))
 		rows = curs.fetchone()
 		
 		print(self.email)
@@ -75,7 +76,7 @@ class SplashScreen:
 		
 		connection = cx_Oracle.connect(self.connectionString)
 		curs = connection.cursor()
-		curs.execute(query, userEmail=self.email)
+		curs.execute(query, userEmail=self.email.ljust(20))
 		rows = curs.fetchone()
 		
 		if (curs.rowcount ==0):
@@ -87,7 +88,7 @@ class SplashScreen:
 	
 
 	def registerUser(self):
-		self.email = input("Please enter an email address: ")
+		self.email = input("Please enter an email address: ").lower()
 		self.password = input("Please enter a 4 character password: ")
 		invalidPass = True
 		
@@ -102,7 +103,7 @@ class SplashScreen:
 		
 		connection = cx_Oracle.connect(self.connectionString)
 		curs = connection.cursor()
-		curs.execute(query, userEmail=self.email)
+		curs.execute(query, userEmail=self.email.ljust(20))
 		rows = curs.fetchone()
 		
 		if (curs.rowcount ==0):
