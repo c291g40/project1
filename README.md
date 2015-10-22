@@ -8,6 +8,6 @@ TIME:
 Edwin:  
     Worked on SplashScreen stuff (2hrs + 2.5hrs) (oct 20)  
     Worked on finishing SplashScreen stuff (1hr) (oct 21)  
-    Worked on setting up the main.py file () (Oct21)  
+    Worked on setting up the main.py file, Login menu + user/agent menu (2 hrs) (Oct21)  
 Mustafa:  
     Worked on Search: Requirement1 ( X hrs) (oct 20)  

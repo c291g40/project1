@@ -18,7 +18,7 @@ class SplashScreen:
 		#Repeat the process while user is unverified or input is invalid
 		while(self.userVerified == False):
 			#Introductory message
-			print("Welcome to group 40's airline ticket system")
+			print("\nWelcome to group 40's airline ticket system")
 			userInput = input("Please select an option: \nLogin(1) \nRegister(2) \nExit(3) \nPlease Enter your selection:")
 			
 			#check if user wants to exit
@@ -38,7 +38,7 @@ class SplashScreen:
 			#if input is invalid, inform the user
 			else:
 				self.userVerified = False
-				print("\ninvalid User Input. Please select a valid input.")
+				print("\nInvalid User Input. Please select a valid input.")
 		
 		#returns true if the user is authenticated
 		return self.userVerified
@@ -51,7 +51,7 @@ class SplashScreen:
 	def userSignin(self):
 		#variables needed from user. Note, email is made into lowercase as all emails should be lowercase
 		#password is CASE SENSITIVE
-		self.email = input("Please enter your email address: ").lower()
+		self.email = input("\nPlease enter your email address: ").lower()
 		self.password = input("Please enter your password: ")
 		
 		#query retrives the user's password if email is vaild
@@ -80,7 +80,7 @@ class SplashScreen:
 			#if the database password and the user password match, notify user and return true.
 			#also checks to see if the user is an Agent or not.
 			if (dbPassword==self.password):
-				print("Login Successful, Type logout at anytime to logout of your account.")
+				print("\nLogin Successful.")
 				self.checkIfAgent()
 				return True
 				
@@ -117,7 +117,7 @@ class SplashScreen:
 	def registerUser(self):
 		#required variables from user.
 		#email is not case Senstive, Password is.
-		self.email = input("Please enter an email address: ").lower()
+		self.email = input("\nPlease enter an email address: ").lower()
 		self.password = input("Please enter a 4 character password: ")
 		
 		#this flag checks to see if the entered value is invalid (db restrictions)
@@ -129,14 +129,14 @@ class SplashScreen:
 			if (len(self.email)<=20):
 				break
 			else:
-				self.email = input("Invalid email. Please enter an email address with a maximum lenght of 20 characters:").lower()
+				self.email = input("\nInvalid email. Please enter an email address with a maximum lenght of 20 characters:").lower()
 		
 		#checks to see if password is a valid lenght.
 		while(1):
 			if (len(self.password)<=4):
 				break
 			else:
-				self.password = input("Invalid Password. Please enter a password with a maximum lenght of 4 characters:")
+				self.password = input("\nInvalid Password. Please enter a password with a maximum lenght of 4 characters:")
 				
 		
 		#2 queries
@@ -157,19 +157,19 @@ class SplashScreen:
 			connection.commit()
 			curs.close()
 			connection.close()	
-			print("Account created. Type logout at anytime to logout of your account.")
+			print("\nAccount created. Type logout at anytime to logout of your account.")
 			return True
 		
 		#if rowcount != 0, email exists, process failed, return false.
 		else:
 			curs.close()
 			connection.close()				
-			print("Account could not be created. Email already exists in the system.")
+			print("\nAccount could not be created. Email already exists in the system.")
 			return False
 			
 	
 	#this logs out the user and resets the variables
-	def logOut(self):
+	def logout(self):
 		self.email = ""
 		self.password = ""
 		self.isAirlineAgent = False
