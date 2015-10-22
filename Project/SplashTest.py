@@ -5,7 +5,11 @@ import splashScreen;
 
 ##splash screen stuff
 
-ss = splashScreen.SplashScreen();
+	#Home
+connectionString = "eorodrig/Lionheart1@localhost:1521/XE"
+	#Lab
+	#connectionString = "eorodrig/pass@gwynne.cs.ualberta.ca:1521/CRS"
+ss = splashScreen.SplashScreen(connectionString);
 ss.start();
 
 
