@@ -17,16 +17,30 @@ def getDepartureDate ():
         else:
             validInput = True
             return depart_date
-    
-def main ():
-    connection = cx_Oracle.connect('abbasi1/c291database@gwynne.cs.ualberta.ca:1521/CRS')
-    
-    source = input("Enter the source airport: ")
-    dest = input("Enter the destination airport: ")
-    depart_date = getDepartureDate()
-    
-    # check if source is valid, check if source in get airport codes from DB
-    
-    # check if dest is valid
 
+
+def validAirport ():
+    try:
+        connection = cx_Oracle.connect('abbasi1/c291database@gwynne.cs.ualberta.ca:1521/CRS')
+        curs = connection.cursor()
+        # get list of airports
+        curs.execute("SELECT acode FROM airports")
+        for row in curs:
+            print(row)
+        # if airport exists return code
+        # else look for matches and get user to choose
+        curs.close
+        connection.close()
+    # error catching sourced from cx_Oracle tutorial
+    except cx_Oracle.DatabaseError as exc:
+        error, = exc.args
+        print( sys.stderr, "Oracle code:", error.code)
+        print( sys.stderr, "Oracle message:", error.message)    
+
+
+def main ():
+    #source = input("Enter the source airport: ")
+    #dest = input("Enter the destination airport: ")
+    #depart_date = getDepartureDate()
+    validAirport()
 main()
