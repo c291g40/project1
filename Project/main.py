@@ -2,6 +2,7 @@ import sys;
 import cx_Oracle;
 import test;
 import splashScreen;
+import booking;
 
 class main:
 	#Home
@@ -62,16 +63,22 @@ class main:
 	#this processes the menu selection from the user
 	def processMenuSelection(self, menuItem, splashScreen):
 		if(menuItem ==1):
-			print("1")
+			print("\n1: Searching for flights")
 			return True
 		elif(menuItem ==2):
-			print("2")
+			print("\n2: Making a booking")
+			book = booking.Booking(self.connectionString)
+			book.makeBooking()
 			return True
 		elif(menuItem ==3):
-			print("3")
+			print("\n3:List Existing Bookings")
+			book = booking.Booking(self.connectionString)
+			book.listExistingBookings()
 			return True
 		elif(menuItem ==4):
-			print("4")
+			print("\n4:Cancel Bookings")
+			book = booking.Booking(self.connectionString)
+			book.cancelBooking()
 			return True
 		elif(menuItem ==5):
 			print("5")
@@ -81,7 +88,7 @@ class main:
 			return True
 		#LOUTOUT
 		elif(menuItem ==9):
-			print("Thank you for using our airline ticket program "+self.email+".")
+			print("\nThank you for using our airline ticket program "+self.email+".")
 			self.logout(splashScreen)
 			return False
 	
