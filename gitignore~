@@ -1,5 +1,0 @@
-#The standard Android git ignore template
-
-# Built application files
-*.py~
-*.pyc

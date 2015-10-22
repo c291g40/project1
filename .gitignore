@@ -1,6 +1,7 @@
 #The standard Android git ignore template
 
 # Built application files
-__pycache__
+__pycache__/
 *.py~
 *.pyc
+

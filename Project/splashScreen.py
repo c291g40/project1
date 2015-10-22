@@ -38,20 +38,13 @@ class SplashScreen:
 		self.password = input("Please enter your password: ")
 		
 		
-		query = "SELECT pass FROM users WHERE email=:u_email"
+		query = "SELECT pass FROM users WHERE TRIM(email)=:u_email"
 		
 		connection = cx_Oracle.connect(self.connectionString)
 		curs = connection.cursor()
-		#curs.prepare(query)
-		#curs.execute(None, {'uemail':self.email})
-		curs.execute(query, u_email=self.email.ljust(20))
+		curs.execute(query, u_email=self.email)
 		rows = curs.fetchone()
-		
-		print(self.email)
-		print(curs.rowcount)
-		print(rows)
-		
-		
+
 		if (curs.rowcount ==0):
 			curs.close()
 			connection.close()
@@ -72,11 +65,11 @@ class SplashScreen:
 	
 	
 	def checkIfAgent(self):
-		query = "SELECT email from airline_agents where email=:userEmail"
+		query = "SELECT email from airline_agents WHERE TRIM(email)=:userEmail"
 		
 		connection = cx_Oracle.connect(self.connectionString)
 		curs = connection.cursor()
-		curs.execute(query, userEmail=self.email.ljust(20))
+		curs.execute(query, userEmail=self.email)
 		rows = curs.fetchone()
 		
 		if (curs.rowcount ==0):
@@ -98,12 +91,12 @@ class SplashScreen:
 			else:
 				self.password = input("Invalid Password. Please enter a password with a maximum lenght of 4 characters:")
 		
-		query = "SELECT email from users where email=:userEmail"
+		query = "SELECT email from users where TRIM(email)=:userEmail"
 		insertquery = "INSERT into users(email, pass) values(:userEmail, :userPass)"
 		
 		connection = cx_Oracle.connect(self.connectionString)
 		curs = connection.cursor()
-		curs.execute(query, userEmail=self.email.ljust(20))
+		curs.execute(query, userEmail=self.email)
 		rows = curs.fetchone()
 		
 		if (curs.rowcount ==0):
