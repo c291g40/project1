@@ -82,9 +82,14 @@ class main:
 		#LOUTOUT
 		elif(menuItem ==9):
 			print("Thank you for using our airline ticket program "+self.email+".")
-			splashScreen.logout()
+			self.logout(splashScreen)
 			return False
-			
+	
+	def logout(self,splashScreen):
+		self.email=""
+		self.password=""
+		self.isAgent=False
+		splashScreen.logout()
 			
 	#this starts the program
 	def start(self):

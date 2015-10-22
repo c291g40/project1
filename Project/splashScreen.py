@@ -170,10 +170,23 @@ class SplashScreen:
 	
 	#this logs out the user and resets the variables
 	def logout(self):
+		query ="UPDATE users SET last_login=sysdate WHERE TRIM(email)=:uemail"
+		
+		#connection and initial query call
+		connection = cx_Oracle.connect(self.connectionString)
+		curs = connection.cursor()
+		curs.execute(query,uEmail=self.email)
+		
+		connection.commit()
+		curs.close()
+		connection.close()	
+		
 		self.email = ""
 		self.password = ""
 		self.isAirlineAgent = False
 		self.userVerified = False
+		
+		
 
 	
 	def getEmail(self):
