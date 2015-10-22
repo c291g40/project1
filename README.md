@@ -11,4 +11,5 @@ Edwin:
     Worked on setting up the main.py file, Login menu + user/agent menu (2 hrs) (Oct21)  
     Worked on Logout feature (.5hr) (Oct21)  
 Mustafa:  
-    Worked on Search: Requirement1 ( X hrs) (oct 20)  
+    Worked on Search: Requirement1 ( 1.5 hrs) (oct 20)  
+    Worked on Search: Requirement1 ( 1 hrs) (oct 21)
