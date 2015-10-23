@@ -71,9 +71,8 @@ class main:
 			book.makeBooking()
 			return True
 		elif(menuItem ==3):
-			print("\n3:List Existing Bookings")
 			book = booking.Booking(self.connectionString)
-			book.listExistingBookings()
+			book.listExistingBookings(self.email)
 			return True
 		elif(menuItem ==4):
 			print("\n4:Cancel Bookings")
