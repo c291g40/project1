@@ -68,7 +68,7 @@ class main:
 		elif(menuItem ==2):
 			print("\n2: Making a booking")
 			book = booking.Booking(self.connectionString)
-			book.makeBooking()
+			book.makeBooking(self.email)
 			return True
 		elif(menuItem ==3):
 			book = booking.Booking(self.connectionString)
