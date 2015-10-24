@@ -13,7 +13,8 @@ Edwin:
     Worked on setting up the main.py file, Login menu + user/agent menu (2 hrs) (Oct21)  
     Worked on Logout feature (.5hr) (Oct21)  
     Worked on Booking Listing (Req 3) (2hr) (Oct22/Oct23)  
-     Worked on Booking Listing (Req 2) (.5hr) (Oct22/Oct23)  
+    Worked on Booking Listing (Req 2) (.5hr) (Oct22/Oct23)  
+    Worked on Making 1-way and 2 way bookings (4 hr) (Oct 24)  
 Mustafa:  
     Worked on Search: Requirement1 ( 1.5 hrs) (oct 20)  
     Worked on Search: Requirement1 ( 1 hrs) (oct 21)  
