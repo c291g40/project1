@@ -14,8 +14,62 @@ class Booking:
 		self.connectionString = connectionString
 	
 
-	def cancelBooking(self):
-		print("cancel Booking")
+	def cancelBooking(self,email):
+		#query merges ticket and booking tables and retrives the tno, name, dep_date, paid_price WHERE t.tno=b.tno
+		query = "SELECT t.tno, t.name, b.dep_date, t.paid_price FROM tickets t, bookings b WHERE t.tno=b.tno and TRIM(t.email)=:u_email"
+		
+				
+		#an array of totalHits size to contain a list of all the ticket numbers
+		ticketArray = array("i")
+		#item number in booking list
+		itemNum = 0
+		
+		#connect to SQL and execute query.
+		connection = cx_Oracle.connect(self.connectionString)
+		curs = connection.cursor()
+		curs.execute(query, u_email=email)
+		rows = curs.fetchone()
+		
+		#if number of hits ==0: user has no bookings in the system
+		if (curs.rowcount ==0):
+			curs.close()
+			connection.close()
+			print("\nUser has no previous bookings.")
+			return 0
+		
+		else:
+			#this prints a formated heading for the ticket info
+			print("\n%s %s %s %s %s" % ("Item No".ljust(8),"Ticket No".ljust(11), "Name".ljust(22), "Depart Date".ljust(12), "Price"))
+			
+			while (rows):
+				itemNum += 1
+				ticketArray.append(self.extractPartialBookingDetails(itemNum,rows))
+				rows = curs.fetchone()
+				
+			curs.close()
+			connection.close()
+
+			userInput = self.verifyUInt("\nPlease enter an item number or press 0 to return to the main menu.", len(ticketArray))
+			if(userInput >0):
+				self.cancelTicketBooking(ticketArray[userInput-1])
+
+		
+	def cancelTicketBooking(self,ticketNo):
+		#this is the query to see if a user exists in the passenger's table
+		bookingQuery = "DELETE FROM bookings WHERE TRIM(tno)=:u_ticketNo"
+		ticketQuery = "DELETE FROM tickets WHERE TRIM(tno)=:u_ticketNo"
+		
+		
+		#connect to SQL and execute query.
+		connection = cx_Oracle.connect(self.connectionString)
+		curs = connection.cursor()
+		curs.execute(bookingQuery, u_ticketNo=ticketNo)
+		curs.execute(ticketQuery, u_ticketNo=ticketNo)
+		connection.commit()
+		curs.close()
+		connection.close()
+		
+		print("Successfully Deleted booking:%s" % ticketNo)
 			
 
 	def makeBooking(self,email):
@@ -225,8 +279,6 @@ class Booking:
 		
 		
 	def addUserToPassengerList(self,name,email,country):
-		
-
 		#this is the query to see if a user exists in the passenger's table
 		query = "INSERT INTO  passengers VALUES(:u_email, :u_name, :u_Country)"
 		
@@ -243,14 +295,12 @@ class Booking:
 	#String format for double from:
 	#http://stackoverflow.com/questions/455612/limiting-floats-to-two-decimal-points
 	def listExistingBookings(self,email):
-			
-		ticketNumber = self.listAllUserBookings(email)
+
 		
-		if (ticketNumber >0):
-			self.viewBookingDetails(ticketNumber)
-			
-		
-	
+		ItemNum = self.listAllUserBookings(email)
+		while(ItemNum>0):
+			ItemNum = self.listAllUserBookings(email)
+
 	
 	def viewBookingDetails(self,ticketNumber):
 		#this is the query to view the full details of a specific booking
@@ -271,7 +321,7 @@ class Booking:
 		
 		else:
 			#this prints a formated heading for the ticket info
-			print("%s %s %s %s %s" % ("Ticket No".ljust(11), "Flight No".ljust(11), "Fare".ljust(6), "Depart Date".ljust(12), "Seat"))
+			print("\n%s %s %s %s %s" % ("Ticket No".ljust(11), "Flight No".ljust(11), "Fare".ljust(6), "Depart Date".ljust(12), "Seat"))
 		
 			#formats data
 			flightno = rows[1].ljust(11)
@@ -286,8 +336,8 @@ class Booking:
 
 		
 	def listAllUserBookings(self,email):
-		#query merges ticket and booking tables and retrives the tno, name, dep_date, paid_price
-		query = "SELECT t.tno, t.name, b.dep_date, t.paid_price FROM tickets t, bookings b WHERE t.tno=b.tno AND TRIM(t.email)=:u_email"
+		#query merges ticket and booking tables and retrives the tno, name, dep_date, paid_price WHERE t.tno=b.tno
+		query = "SELECT t.tno, t.name, b.dep_date, t.paid_price FROM tickets t, bookings b WHERE t.tno=b.tno and TRIM(t.email)=:u_email"
 		
 				
 		#an array of totalHits size to contain a list of all the ticket numbers
@@ -310,7 +360,7 @@ class Booking:
 		
 		else:
 			#this prints a formated heading for the ticket info
-			print("%s %s %s %s %s" % ("Item No".ljust(8),"Ticket No".ljust(11), "Name".ljust(22), "Depart Date".ljust(12), "Price"))
+			print("\n%s %s %s %s %s" % ("Item No".ljust(8),"Ticket No".ljust(11), "Name".ljust(22), "Depart Date".ljust(12), "Price"))
 			
 			while (rows):
 				itemNum += 1
@@ -319,12 +369,19 @@ class Booking:
 				
 			curs.close()
 			connection.close()
-			print("\nWould you like a booking?")
-			userInput = self.verifyUInt("Please enter an item number or press 0 to return to the main menu.", len(ticketArray))
-			if(userInput >0):
-				return ticketArray[userInput-1]
-			else:
+			userAction = input("\nWould you like to view a booking(v), cancel a booking(c) or return to the previous menu(q) :")
+			if(userAction=='q' or userAction=='Q'):
 				return 0
+			else:
+				userInput = self.verifyUInt("Please enter an item number or press 0 to return to the main menu.", len(ticketArray))
+				if((userInput >0) and (userAction=='v' or userAction=='V')):
+					self.viewBookingDetails(ticketArray[userInput-1])
+					return 1
+				elif((userInput >0) and (userAction=='c' or userAction=='C')):
+					self.cancelTicketBooking(ticketArray[userInput-1])
+					return 1
+				else:
+					return 0
 		
 	
 		

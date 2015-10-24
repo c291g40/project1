@@ -68,7 +68,6 @@ class main:
 			print("\n1: Searching for flights")
 			return True
 		elif(menuItem ==2):
-			print("\n2: Making a booking")
 			book = booking.Booking(self.connectionString)
 			book.makeBooking(self.email)
 			return True
@@ -77,9 +76,8 @@ class main:
 			book.listExistingBookings(self.email)
 			return True
 		elif(menuItem ==4):
-			print("\n4:Cancel Bookings")
 			book = booking.Booking(self.connectionString)
-			book.cancelBooking()
+			book.cancelBooking(self.email)
 			return True
 		elif(menuItem ==5):
 			print("5")
