@@ -130,8 +130,19 @@ class main:
 program = main()
 dbUserName = sys.argv[1]
 dbPassword = sys.argv[2]
+dbType = ""
+try:
+	dbType = sys.argv[3]
+except IndexError:
+	dbType = "x"
+	
+if (dbType =='e'):
+	program.connectionString = dbUserName + "/" +dbPassword + "@localhost:1521/XE"
+elif(dbType =='m'):
+	program.connectionString = dbUserName + "/" +dbPassword + "@localhost:1521/XE"
+else:
+	program.connectionString = dbUserName + "/" +dbPassword + "@gwynne.cs.ualberta.ca:1521/CRS"
 
-program.connectionString = dbUserName + "/" +dbPassword + "@localhost:1521/XE"
 program.start()				
 
 			
