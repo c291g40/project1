@@ -6,6 +6,9 @@ INFO:
 assuming that you used default settings for installing oracle at home, this should be your connection string:
 connectionString = "username/password@localhost:1521/XE"  
 
+To Launch:
+    py main.py dbUsername dbPassword home: where home is optional(e is for home connection string for Edwin, m is for Mustafa)  
+
 TIME:  
 Edwin: (TOTAL: 15.5 hr)  
     Worked on SplashScreen stuff (2hrs + 2.5hrs) (oct 20)  
