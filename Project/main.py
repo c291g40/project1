@@ -8,13 +8,12 @@ import time
 
 class main:
 	#Home
-	connectionString = "eorodrig/Lionheart1@localhost:1521/XE"
+	#connectionString = "eorodrig/Lionheart1@localhost:1521/XE"
 	#Lab
 	#connectionString = "eorodrig/pass@gwynne.cs.ualberta.ca:1521/CRS"
 	#this determines if the user is authenticated	
 	email = ""
 	password =""
-	isAgent = False
 	
 	#This gets the main User Information.
 	def getUserInfo(self,splashScreen):
@@ -129,6 +128,10 @@ class main:
 				
 
 program = main()
+dbUserName = sys.argv[1]
+dbPassword = sys.argv[2]
+
+program.connectionString = dbUserName + "/" +dbPassword + "@localhost:1521/XE"
 program.start()				
 
 			
