@@ -49,7 +49,7 @@ class Booking:
 			curs.close()
 			connection.close()
 
-			userInput = self.verifyUInt("\nPlease enter an item number or press 0 to return to the main menu.", len(ticketArray))
+			userInput = self.verifyUInt("\nPlease enter an item number or press 0 to return to the main menu:", len(ticketArray))
 			if(userInput >0):
 				self.cancelTicketBooking(ticketArray[userInput-1])
 
@@ -122,7 +122,7 @@ class Booking:
 		if(self.isUserAPassenger(userName,email)==False):
 			country = input("\nPassenger is not found. Please input the passenger's country of residence:")
 		
-		self.book2WayFlight(userName,email,country, flightN1o, fareType1, depDate1,flightNo2, fareType2, depDate2)
+		self.book2WayFlight(userName,email,country, flightNo1, fare1, depDate1,flightNo2, fare2, depDate2)
 	
 
 
