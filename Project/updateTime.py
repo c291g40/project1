@@ -68,3 +68,4 @@ def updateTime (connectionString, changeType):
         print( sys.stderr, "Oracle message:", error.message)
 
 # updateTime('abbasi1/c291database@gwynne.cs.ualberta.ca:1521/CRS',"Departure")
+#updateTime('abbasi1/c291database@gwynne.cs.ualberta.ca:1521/CRS',"Departure")

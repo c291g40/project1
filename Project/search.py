@@ -9,6 +9,7 @@ import sys
 # check times of connecting flights
 # use connectstring from main
 
+
 def getDepartureDate ():
     validInput = False
     while not(validInput):
@@ -26,7 +27,7 @@ def getDepartureDate ():
             return depart_date
 
 
-def validAirport (acode):
+def validAirport (acode , connectionString):
     try:
         acode = acode.upper()
         acodeList = []
@@ -34,7 +35,7 @@ def validAirport (acode):
         validAirport = False
 
         # connect to database
-        connection = cx_Oracle.connect('abbasi1/c291database@gwynne.cs.ualberta.ca:1521/CRS')
+        connection = cx_Oracle.connect(connectionString)
         curs = connection.cursor()
 
         # get list of airports
@@ -78,12 +79,12 @@ def validAirport (acode):
         print( sys.stderr, "Oracle code:", error.code)
         print( sys.stderr, "Oracle message:", error.message)
 
-def searchDirectFlights (src, dst, dep_date):
+def searchDirectFlights (src, dst, dep_date,connectionString):
     flightsList = []
     i = 0
     try:
         # connect to database
-        connection = cx_Oracle.connect('abbasi1/c291database@gwynne.cs.ualberta.ca:1521/CRS')
+        connection = cx_Oracle.connect(connectionString)
         curs = connection.cursor()
         
         # using official answer for A2Q7 for testing
@@ -117,13 +118,13 @@ def searchDirectFlights (src, dst, dep_date):
         print( sys.stderr, "Oracle code:", error.code)
         print( sys.stderr, "Oracle message:", error.message)
     
-def searchConnectFlights (src, dst, dep_date):
+def searchConnectFlights (src, dst, dep_date,connectionString):
     nameList = []
     flightsList = []
     i = 0
     try:
         # connect to database
-        connection = cx_Oracle.connect('abbasi1/c291database@gwynne.cs.ualberta.ca:1521/CRS')
+        connection = cx_Oracle.connect(connectionString)
         curs = connection.cursor()
         
         # using official answer for A2Q9/10 for testing
@@ -217,22 +218,24 @@ def selectFlights(sortBy, directFlights, connectFlights):
         str(flight[8]))
     return(allFlights)
 
-def main ():
+def main (email, connectionString):
+	
     # get user input for src, dst, date#
-    source = "YEG" #input("Enter the source airport: ")
-    dest = "LAX" #input("Enter the destination airport: ")
-    dep_date = "22/12/2015" #getDepartureDate()
+    source = input("Enter the source airport: ")
+    dest = input("Enter the destination airport: ")
+    dep_date = getDepartureDate()
 
     # check validity of ACODE
-    source = validAirport(source.strip())
-    dest = validAirport(dest.strip())
-
+    source = validAirport(source.strip(), connectionString)
+    dest = validAirport(dest.strip(), connectionString)
+	
+	
     # search for flights
-    directFlights = searchDirectFlights (source, dest, dep_date)
-    connectFlights = searchConnectFlights (source, dest, dep_date)
+    directFlights = searchDirectFlights (source, dest, dep_date, connectionString)
+    connectFlights = searchConnectFlights (source, dest, dep_date, connectionString)
 
     # sort the lists
-    sortBy = "direct" #input("Sort by price or direct: ").strip().lower()
+    sortBy = input("Sort by price or direct: ").strip().lower()
     allFlights = selectFlights(sortBy, directFlights, connectFlights)
 
-main()
+#main(email, connectio)
