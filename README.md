@@ -2,9 +2,13 @@ This is the readme file for the first project assignment in c291.
 
 Note: Remember to put 2 spaces at the end of each line to create a new line.
 
-INFO:  
-assuming that you used default settings for installing oracle at home, this should be your connection string:
-connectionString = "username/password@localhost:1521/XE"  
+Issues:
+    updatimeTime:
+        There is an error in entering time input. No matter what the input is (within the 24 hour time boundaries), There is a message saying, Invalid entry.
+    
+    search.py:    
+    Could not test search.py from home(errors with query) but managed to test via ssh.
+        I think the specs mention that we need to select a flight from the results of the search but i don't see that imlemented.
 
 To Launch:
     py main.py dbUsername dbPassword home: where home is optional(e is for home connection string for Edwin, m is for Mustafa)  
