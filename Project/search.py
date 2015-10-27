@@ -5,16 +5,18 @@ import datetime
 import sys
 
 # to-do
-# !!! check times of connecting flights so deptime2 > arrtime1 (timezone?)
-# use connectstring from main
-# check timezones for display
+# time for second flight within 24 hours
 # !!! correct amount of spacing in display
-# error handling, no flights found etc.
+
 
 # done
 # check seats>0
 # !!! store return dep_date and fare type
 # !!! print roundtrip flights 
+# use connectstring from main
+# check timezones for display
+# !!! check times of connecting flights so deptime2 > arrtime1 (timezone?)
+# error handling, no flights found etc.
 
 # Gets user to enter valid date using datetime. 
 def getDate (dateType):
@@ -45,9 +47,9 @@ def validAirport (acode, connectionString):
         curs = connection.cursor()
 
         # get list of airports
-        curs.execute("SELECT acode FROM airports")
+        curs.execute("SELECT UPPER(acode) FROM airports")
         for row in curs:
-            acodeList.append(row[0].upper())
+            acodeList.append(row[0])
         
         # if airport exists return code
         if acode in acodeList:
@@ -55,14 +57,15 @@ def validAirport (acode, connectionString):
         
         if not(validAirport):
             # get list of matching airports' name, city
-            curs.execute("SELECT acode,name,city FROM airports")
+            curs.execute("SELECT UPPER(acode),UPPER(name),UPPER(city) FROM airports")
             for row in curs:
-                if acode in row[1].upper() or acode in row[2].upper():
-                    temp = [row[0].upper(), row[1].upper(), row[2].upper()]
+                if acode in row[1] or acode in row[2]:
+                    temp = [row[0], row[1], row[2]]
                     matchList.append(temp)
         
             # get user to select a matching airport
             validInput = False
+            print("ACODE".ljust(4),"Airport".ljust(31),"City".ljust(16))
             for match in matchList:
                 print(match[0].ljust(4),match[1].ljust(31),match[2].ljust(16))
             while not(validInput):
@@ -71,6 +74,7 @@ def validAirport (acode, connectionString):
                 airport = airport.upper()
                 if airport in [match[0] for match in matchList]:
                     validInput = True
+                acode = airport
              
         # close the connection
         curs.close
@@ -94,9 +98,9 @@ def searchDirectFlights (src, dst, dep_date,connectionString):
         connection = cx_Oracle.connect(connectionString)
         curs = connection.cursor()
         
-        # using official answer for A2Q7 for testing
+        # using modified solution from assignment 2
         # get list of direct flights
-        curs.execute("select f.flightno, f.src, f.dst, f.dep_time+(trunc(sf.dep_date)-trunc(f.dep_time)), f.dep_time+(trunc(sf.dep_date)-trunc(f.dep_time))+(f.est_dur/60+a2.tzone-a1.tzone)/24, fa.price, fa.limit-count(tno), TO_CHAR(sf.dep_date, 'DD-MM-YYYY'), fa.fare from flights f, flight_fares fa, sch_flights sf, bookings b, airports a1, airports a2 where f.flightno=sf.flightno and f.flightno=fa.flightno and f.src=a1.acode and f.dst=a2.acode and fa.flightno=b.flightno(+) and fa.fare=b.fare(+) and sf.dep_date=b.dep_date(+) and f.src ='"+src+"' and f.dst='"+dst+"' and to_char(sf.dep_date,'DD-MM-YYYY')='"+dep_date+"' group by f.flightno, sf.dep_date, f.src, f.dst, f.dep_time, f.est_dur,a2.tzone, a1.tzone, fa.fare, fa.limit, fa.price having fa.limit-count(tno) > 0")
+        curs.execute("SELECT trim(f.flightno), f.src, f.dst, f.dep_time+(trunc(sf.dep_date)-trunc(f.dep_time)), f.dep_time+(trunc(sf.dep_date)-trunc(f.dep_time))+(f.est_dur/60+a2.tzone-a1.tzone)/24, fa.price, fa.limit-count(tno), trim(TO_CHAR(sf.dep_date, 'DD-MM-YYYY')), trim(fa.fare) FROM flights f, flight_fares fa, sch_flights sf, bookings b, airports a1, airports a2 WHERE f.flightno=sf.flightno and f.flightno=fa.flightno and f.src=a1.acode and f.dst=a2.acode and fa.flightno=b.flightno(+) and fa.fare=b.fare(+) and sf.dep_date=b.dep_date(+) and f.src ='"+src+"' and f.dst='"+dst+"' and to_char(sf.dep_date,'DD-MM-YYYY')='"+dep_date+"' GROUP BY f.flightno, sf.dep_date, f.src, f.dst, f.dep_time, f.est_dur,a2.tzone, a1.tzone, fa.fare, fa.limit, fa.price having fa.limit-count(tno) > 0")
         
         # add each flight and attributes to a list 
         for row in curs:
@@ -110,10 +114,8 @@ def searchDirectFlights (src, dst, dep_date,connectionString):
             flightsList[i][6] = "N/A"
             flightsList[i][7] = row[5]
             flightsList[i][8] = row[6]
-            flightsList[i][9] = row[7].strip()
-            flightsList[i][10] = row[8].strip()
-            #print(type(flightsList[0][3]))
-            #print(flightsList[0][4].strftime("%d/%m/%Y"))
+            flightsList[i][9] = row[7]
+            flightsList[i][10] = row[8]
             i += 1
         
         # close the connection
@@ -139,38 +141,34 @@ def searchConnectFlights (src, dst, dep_date,connectionString):
         connection = cx_Oracle.connect(connectionString)
         curs = connection.cursor()
         
-        # using official answer for A2Q9/10 for testing
         # gets list of flights with one connection from src to dst on dep_date
-        curs.execute("select s1.flightno, s2.flightno, to_char(s1.dep_date,'DD-MM-YYYY'), to_char(s2.dep_date,'DD-MM-YYYY') from sch_flights s1, sch_flights s2, flights f1, flights f2, airports a1, airports a2 where f1.src=a1.acode and f1.dst=a2.acode and s1.flightno = f1.flightno and s2.flightno = f2.flightno and f2.dep_time+(trunc(s2.dep_date)-trunc(f2.dep_time)) > f1.dep_time+(trunc(s1.dep_date)-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone)/24 and f1.src ='"+src+"' and f2.dst='"+dst+"' and to_char(s1.dep_date,'DD-MM-YYYY')='"+dep_date+"'") 
+        curs.execute("select s1.flightno, s2.flightno, to_char(s1.dep_date,'DD-MM-YYYY'), to_char(s2.dep_date,'DD-MM-YYYY') from sch_flights s1, sch_flights s2, flights f1, flights f2, airports a1, airports a2 where f1.src=a1.acode and f1.dst=a2.acode and s1.flightno = f1.flightno and s2.flightno = f2.flightno and f1.dst=f2.src and f2.dep_time+(trunc(s2.dep_date)-trunc(f2.dep_time)) > f1.dep_time+(trunc(s1.dep_date)-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone)/24 and f1.src ='"+src+"' and f2.dst='"+dst+"' and to_char(s1.dep_date,'DD-MM-YYYY')='"+dep_date+"'") 
         
         # adds all flight combinations to a list 
         for row in curs:
             nameList.append(row)
             
+        # using modified solution from assignment 2
         # uses the namelist to look up other attributes of the flights
         for flight in nameList:
             flightsList.append([])
             for x in [0,1]:
                 flightsList[i].append([])
-                curs.execute("select f.flightno, f.src, f.dst, f.dep_time+(trunc(sf.dep_date)-trunc(f.dep_time)), f.dep_time+(trunc(sf.dep_date)-trunc(f.dep_time))+(f.est_dur/60+a2.tzone-a1.tzone)/24, fa.price, fa.limit-count(tno), TO_CHAR(sf.dep_date, 'DD-MM-YYYY'), fa.fare from flights f, flight_fares fa, sch_flights sf, bookings b, airports a1, airports a2 where f.flightno=sf.flightno and f.flightno=fa.flightno and f.src=a1.acode and f.dst=a2.acode and fa.flightno=b.flightno(+) and fa.fare=b.fare(+) and sf.dep_date=b.dep_date(+) and f.flightno ='"+flight[x]+"' and to_char(sf.dep_date,'DD-MM-YYYY')='"+flight[x+2]+"' group by f.flightno, sf.dep_date, f.src, f.dst, f.dep_time, f.est_dur,a2.tzone, a1.tzone, fa.fare, fa.limit, fa.price having fa.limit-count(tno) > 0")    
+                curs.execute("select trim(f.flightno), f.src, f.dst, f.dep_time+(trunc(sf.dep_date)-trunc(f.dep_time)), f.dep_time+(trunc(sf.dep_date)-trunc(f.dep_time))+(f.est_dur/60+a2.tzone-a1.tzone)/24, fa.price, fa.limit-count(tno), trim(TO_CHAR(sf.dep_date, 'DD-MM-YYYY')), trim(fa.fare) from flights f, flight_fares fa, sch_flights sf, bookings b, airports a1, airports a2 where f.flightno=sf.flightno and f.flightno=fa.flightno and f.src=a1.acode and f.dst=a2.acode and fa.flightno=b.flightno(+) and fa.fare=b.fare(+) and sf.dep_date=b.dep_date(+) and f.flightno ='"+flight[x]+"' and to_char(sf.dep_date,'DD-MM-YYYY')='"+flight[x+2]+"' group by f.flightno, sf.dep_date, f.src, f.dst, f.dep_time, f.est_dur,a2.tzone, a1.tzone, fa.fare, fa.limit, fa.price having fa.limit-count(tno) > 0")    
                 y = 0                    
                 for row in curs:
                     flightsList[i][x].append([ [] for i in range(11)])
-                    flightsList[i][x][y][0] = row[0].strip() # flight number
+                    flightsList[i][x][y][0] = row[0] # flight number
                     flightsList[i][x][y][1] = row[1] # source acode
                     flightsList[i][x][y][2] = row[2] # dest acode
                     flightsList[i][x][y][3] = row[3] # dep time
                     flightsList[i][x][y][4] = row[4] # arr time
                     flightsList[i][x][y][5] = "" # number of stops
-                    #layoverTime = row[4]-row[3]
-                    flightsList[i][x][y][6] = "" #layoverTime # layover time
+                    flightsList[i][x][y][6] = "" #layoverTime
                     flightsList[i][x][y][7] = row[5] # price
                     flightsList[i][x][y][8] = row[6] # num seats avail
-                    flightsList[i][x][y][9] = row[7].strip() # dep_date
-                    flightsList[i][x][y][10] = row[8].strip() # fare
-                    #print(type(flightsList[0][3]))
-                    #print(flightsList[0][4].strftime("%d/%m/%Y"))
-                    #print(flightsList[0][6])
+                    flightsList[i][x][y][9] = row[7] # dep_date
+                    flightsList[i][x][y][10] = row[8] # fare
                     y += 1
             i += 1
         
@@ -286,7 +284,7 @@ def selectFlights(flightsList, totalFlights):
 def main (connectionString):
 
     # print header info
-    print("Searching for flights: ")
+    print("\nSearching for flights: ")
 	
     # get user input for src and dst acodes
     source = input("Enter the source airport: ")
@@ -311,32 +309,44 @@ def main (connectionString):
 
         # search for return flights
         directReturns = searchDirectFlights (dest, source, return_date, connectionString)
-        connectReturns = searchConnectFlights (dest, source, return_date, connectionString)
-    
+        connectReturns = searchConnectFlights (dest, source, return_date, connectionString)  
+        
         # sort & print departing and returning flights seperately
         print("\nDEPARTING FLIGHTS:")
         departingFlights = printFlights("price", directFlights, connectFlights)
+        if len(departingFlights) == 0:
+            print("No flights were found.")            
         print("\nRETURNING FLIGHTS:")
         returningFlights = printFlights("price", directReturns, connectReturns)
+        if len(returningFlights) == 0:
+            print("No flights were found.")        
+        # if flights are not found then return empty without booking
+        if len(departingFlights) == 0 or len(returningFlights) == 0:
+            return([])        
 
     else:
         # in case of one way flight only
         # get sort preference from user, sort and print the flights
         sortBy = input("\nSort by price or direct: ").strip().lower()
-        print("DEPARTING FLIGHTS:")
+        print("\nDEPARTING FLIGHTS:")
         departingFlights = printFlights(sortBy, directFlights, connectFlights)
+        if len(departingFlights) == 0:
+            print("No flights were found.") 
+            # if flights are not found then return empty without booking
+            return([])
 
-    # get user to pick a flight to book for departing flights
-    print("\nNow selecting outbound flight.") 
-    selectedDeparting = selectFlights(departingFlights, len(departingFlights))
-    # get user to pick a flight to book for departing flights
-    if searchRoundtrip == "y":
-        print("\nNow selecting inbound flight.") 
-        selectedReturning = selectFlights(returningFlights, len(returningFlights))
-    else:
-        selectedReturning = []
+    # book flights if wanted by user
+    selectedDeparting = []
+    selectedReturning = []     
+    bookFlights = input("Do you want to book any flights? Enter y or n: ").lower()
+    if bookFlights == "y":
+        # get user to pick a flight to book for departing flights
+        print("\nNow selecting outbound flight.") 
+        selectedDeparting = selectFlights(departingFlights, len(departingFlights))
+        # get user to pick a flight to book for returning flights
+        if searchRoundtrip == "y":
+            print("\nNow selecting inbound flight.") 
+            selectedReturning = selectFlights(returningFlights, len(returningFlights))
 
     # return the results which is a list of flightno, dep_date and fare of selected flights
-    print([selectedDeparting+selectedReturning])
-
-main("abbasi1/c291database@gwynne.cs.ualberta.ca:1521/CRS")
+    return(selectedDeparting+selectedReturning)

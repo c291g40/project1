@@ -424,14 +424,14 @@ class Booking:
 	#this is for selection from a list. This will not commit and thus keeps with specs		
 	def bookAFlight(self,userName, email,flightNo, depDate, fareType, curs ):
 		#this searches for the price of a ticket. if the booking is still available in that fare it will return a price, else nothing.
-		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) FROM sch_flights s, flight_fares f WHERE s.flightno=f.flightno and s.dep_Date=:u_date and TRIM(s.flightno)=:u_flightno group by fare)"
+		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) FROM sch_flights s, flight_fares f WHERE s.flightno=f.flightno and TO_CHAR(s.dep_Date,'DD-MM-YYYY')='"+depDate+"' and TRIM(s.flightno)=:u_flightno group by fare)"
 
 		#update table queries
 		UpdateTicketsQuery = "INSERT INTO tickets VALUES(:u_ticketNum, :u_name, :u_email, :u_price)"
-		UpdateBookingsQuery = "INSERT INTO bookings VALUES (:u_ticketNum, :u_flightno, :u_fare, :u_depDate, null)"
+		UpdateBookingsQuery = "INSERT INTO bookings VALUES (:u_ticketNum, :u_flightno, :u_fare, TO_DATE(':u_depDate','DD-MM-YYYY'), null)"
 		
 		#connection and launch of search
-		curs.execute(searchQuery, u_fare=fareType, u_date=depDate, u_flightno=flightNo)
+		curs.execute(searchQuery, u_fare=fareType, u_flightno=flightNo)
 		rows = curs.fetchone()
 		
 		#If seat is available at selected fare, update tables and commits
@@ -441,14 +441,14 @@ class Booking:
 			curs.execute(UpdateTicketsQuery,u_ticketNum = ticketNum, u_name=userName, u_email=email, u_price = price)
 			curs.execute(UpdateBookingsQuery,u_ticketNum = ticketNum, u_flightno=flightNo, u_fare=fareType, u_depDate=depDate)
 			print("\nFLight number %s has been booked. Your Ticket Number is %s" %(flightNo,ticketNum))
-			return True
+			return 1
 		#if tickets sold out.
 		else:
 			print("\nWe were unable to book your flight. The seats in the requested fare are sold out for flight %s." %flightNo)
-			return False		
+			return 0		
 	
-	def forMustafa():		
-		flightStatus = False
+	def bookFromSearchResults(self,email,flightsList):		
+		flightStatus = 1
 		
 		userName = input("Please input the name of the passenger:")
 		country = ""
@@ -463,9 +463,14 @@ class Booking:
 		curs = connection.cursor()
 		
 		#Do some stuff here  (Maybe a while or for loop with different arrays for flightNo, depDate, and fareType?. Break once flightStatus is False)
-		flightStatus = self.bookAFlight(userName, email, flightNo, depDate, fareType, curs)
+		for flight in flightsList:
+			flightNo = flight[0]
+			depDate = flight[1]
+			print(depDate)
+			fareType = flight[2]
+			flightStatus = flightStatus * self.bookAFlight(userName, email, flightNo, depDate, fareType, curs)
 		
-		if (flightStatus == True):
+		if (flightStatus == 1):
 			connection.commit()
 		curs.close()
 		connection.close()
