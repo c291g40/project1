@@ -463,7 +463,7 @@ class Booking:
 		curs = connection.cursor()
 		
 		#Do some stuff here  (Maybe a while or for loop with different arrays for flightNo, depDate, and fareType?. Break once flightStatus is False)
-		flightStatus = bookAFlight(userName, email, flightNo, depDate, fareType, curs)
+		flightStatus = self.bookAFlight(userName, email, flightNo, depDate, fareType, curs)
 		
 		if (flightStatus == True):
 			connection.commit()
