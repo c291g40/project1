@@ -5,6 +5,7 @@ import splashScreen;
 import booking;
 import datetime
 import time
+import search
 
 class main:
 	#Home
@@ -64,6 +65,7 @@ class main:
 	#this processes the menu selection from the user
 	def processMenuSelection(self, menuItem, splashScreen):
 		if(menuItem ==1):
+			search.main(self.email, self.connectionString)
 			print("\n1: Searching for flights")
 			return True
 		elif(menuItem ==2):
