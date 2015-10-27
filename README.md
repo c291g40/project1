@@ -2,7 +2,7 @@ This is the readme file for the first project assignment in c291.
 
 Note: Remember to put 2 spaces at the end of each line to create a new line.
 
-Issues:
+Issues:  
     updatimeTime:
         There is an error in entering time input. No matter what the input is (within the 24 hour time boundaries), There is a message saying, Invalid entry.
     
