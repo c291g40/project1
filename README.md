@@ -7,7 +7,15 @@ Issues:
         There is an error in entering time input. No matter what the input is (within the 24 hour time boundaries), There is a message saying, Invalid entry.  
     search.py:  
         Could not test search.py from home(errors with query) but managed to test via ssh.
-        I think the specs mention that we need to select a flight from the results of the search but i don't see that imlemented.
+        I think the specs mention that we need to select a flight from the results of the search but i don't see that imlemented.  
+    
+    Use these calls to make a booking:  
+        import booking  
+    
+        booking = booking.booking(connectionString)  
+         booking.book1WayFromSelection(email, flightNo, depDate, fareType)  
+        OR  
+    	book2WayFromSelection(email, FlightNo1, depDate1, fare1,FlightNo2, depDate2, fare2):  
 
 To Launch:
     py main.py dbUsername dbPassword home: where home is optional(e is for home connection string for Edwin, m is for Mustafa)  
