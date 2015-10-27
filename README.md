@@ -6,7 +6,7 @@ Issues:
     updatimeTime:
         There is an error in entering time input. No matter what the input is (within the 24 hour time boundaries), There is a message saying, Invalid entry.
     
-    search.py:    
+    search.py:  
     Could not test search.py from home(errors with query) but managed to test via ssh.
         I think the specs mention that we need to select a flight from the results of the search but i don't see that imlemented.
 
