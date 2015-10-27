@@ -12,7 +12,7 @@ Issues:
     Use these calls to make a booking:  
         import booking  
     
-        booking = booking.booking(connectionString)  
+        booking = booking.Booking(connectionString)  
          booking.book1WayFromSelection(email, flightNo, depDate, fareType)  
         OR  
     	book2WayFromSelection(email, FlightNo1, depDate1, fare1,FlightNo2, depDate2, fare2):  
