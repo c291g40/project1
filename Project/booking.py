@@ -424,14 +424,14 @@ class Booking:
 	#this is for selection from a list. This will not commit and thus keeps with specs		
 	def bookAFlight(self,userName, email,flightNo, depDate, fareType, curs ):
 		#this searches for the price of a ticket. if the booking is still available in that fare it will return a price, else nothing.
-		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) FROM sch_flights s, flight_fares f WHERE s.flightno=f.flightno and TO_CHAR(s.dep_Date,'DD-MM-YYYY')='"+depDate+"' and TRIM(s.flightno)=:u_flightno group by fare)"
+		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) FROM sch_flights s, flight_fares f WHERE s.flightno=f.flightno and s.dep_Date=:u_depDate and TRIM(s.flightno)=:u_flightno group by fare)"
 
 		#update table queries
 		UpdateTicketsQuery = "INSERT INTO tickets VALUES(:u_ticketNum, :u_name, :u_email, :u_price)"
-		UpdateBookingsQuery = "INSERT INTO bookings VALUES (:u_ticketNum, :u_flightno, :u_fare, TO_DATE(':u_depDate','DD-MM-YYYY'), null)"
+		UpdateBookingsQuery = "INSERT INTO bookings VALUES (:u_ticketNum, :u_flightno, :u_fare, :u_depDate, null)"
 		
 		#connection and launch of search
-		curs.execute(searchQuery, u_fare=fareType, u_flightno=flightNo)
+		curs.execute(searchQuery, u_fare=fareType,u_depDate=depDate, u_flightno=flightNo)
 		rows = curs.fetchone()
 		
 		#If seat is available at selected fare, update tables and commits
@@ -465,8 +465,7 @@ class Booking:
 		#Do some stuff here  (Maybe a while or for loop with different arrays for flightNo, depDate, and fareType?. Break once flightStatus is False)
 		for flight in flightsList:
 			flightNo = flight[0]
-			depDate = flight[1]
-			print(depDate)
+			depDate = datetime.datetime(int(flight[1][6:10]), int(flight[1][3:5]), int(flight[1][0:2]))
 			fareType = flight[2]
 			flightStatus = flightStatus * self.bookAFlight(userName, email, flightNo, depDate, fareType, curs)
 		

@@ -347,6 +347,8 @@ def main (connectionString):
         if searchRoundtrip == "y":
             print("\nNow selecting inbound flight.") 
             selectedReturning = selectFlights(returningFlights, len(returningFlights))
+            # return the results which is a list of flightno, dep_date and fare of selected flights
+            return(selectedDeparting+selectedReturning)            
 
     # return the results which is a list of flightno, dep_date and fare of selected flights
-    return(selectedDeparting+selectedReturning)
+    return(selectedDeparting)
