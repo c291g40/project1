@@ -21,7 +21,7 @@ To Launch:
     py main.py dbUsername dbPassword home: where home is optional(e is for home connection string for Edwin, m is for Mustafa)  
 
 TIME:  
-Edwin: (TOTAL: 15.5 hr)  
+Edwin: (TOTAL: 16.5 hr)  
     Worked on SplashScreen stuff (2hrs + 2.5hrs) (oct 20)  
     Worked on finishing SplashScreen stuff (1hr) (oct 21)  
     Worked on setting up the main.py file, Login menu + user/agent menu (2 hrs) (Oct21)  
@@ -32,10 +32,12 @@ Edwin: (TOTAL: 15.5 hr)
     Worked on cancelling bookings (1 hr) (Oct 24)  
     Worked on merging Edwin+Musfafa's work (1hr) (Oct 26)  
       
-Mustafa: (TOTAL: 12.5 hr)  
+Mustafa: (TOTAL: 17 hr)  
     Worked on Search: Requirement1 ( 1.5 hrs) (oct 20)  
     Worked on Search: Requirement1 ( 1 hrs) (oct 21)  
     Worked on Search: Requirement1 ( 2 hrs) (oct 22)  
     Worked on Search: Requirement1 ( 3 hrs) (oct 24)  
     Worked on Search: Requirement1 ( 3 hrs) (oct 25)  
     Worked on updateTime: Requirement 1,2 ( 2 hrs) (oct 25)  
+    Worked on fixing bugs  ( 2 hrs) (oct 26)  
+    Worked on updateTime: Added round trips ( 2.5 hrs) (oct 26)  
