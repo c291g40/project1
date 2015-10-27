@@ -440,7 +440,7 @@ class Booking:
 			ticketNum = self.getTicketNum(curs)	
 			curs.execute(UpdateTicketsQuery,u_ticketNum = ticketNum, u_name=userName, u_email=email, u_price = price)
 			curs.execute(UpdateBookingsQuery,u_ticketNum = ticketNum, u_flightno=flightNo, u_fare=fareType, u_depDate=depDate)
-			print("\nThank for booking your flight with us. Your Ticket Number is %s" %ticketNum)
+			print("\nFLight number %s has been booked. Your Ticket Number is %s" %(flightNo,ticketNum))
 			return True
 		#if tickets sold out.
 		else:
