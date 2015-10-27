@@ -6,6 +6,7 @@ import booking;
 import datetime
 import time
 import search
+import updateTime
 
 class main:
 	#Home
@@ -66,7 +67,6 @@ class main:
 	def processMenuSelection(self, menuItem, splashScreen):
 		if(menuItem ==1):
 			search.main(self.email, self.connectionString)
-			print("\n1: Searching for flights")
 			return True
 		elif(menuItem ==2):
 			book = booking.Booking(self.connectionString)
@@ -81,10 +81,10 @@ class main:
 			book.cancelBooking(self.email)
 			return True
 		elif(menuItem ==5):
-			print("5")
+			updateTime.updateTime(self.connectionString, "Departure")
 			return True
 		elif(menuItem ==6):
-			print("6")
+			updateTime.updateTime(self.connectionString, "Arrival")
 			return True
 		#LOUTOUT
 		elif(menuItem ==9):
