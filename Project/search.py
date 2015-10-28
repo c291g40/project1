@@ -128,7 +128,7 @@ def searchConnectFlights (src, dst, dep_date,connectionString):
         curs = connection.cursor()
         
         # gets list of flights with one connection from src to dst on dep_date
-        curs.execute("select s1.flightno, s2.flightno, to_char(s1.dep_date,'DD-MM-YYYY'), to_char(s2.dep_date,'DD-MM-YYYY') from sch_flights s1, sch_flights s2, flights f1, flights f2, airports a1, airports a2 where f1.src=a1.acode and f1.dst=a2.acode and s1.flightno = f1.flightno and s2.flightno = f2.flightno and f1.dst=f2.src and f1.src ='"+src+"' and f2.dst='"+dst+"' and to_char(s1.dep_date,'DD-MM-YYYY')='"+dep_date+"' and (trunc(s2.dep_date)+(f2.dep_time-trunc(f2.dep_time))) >= (trunc(s1.dep_date)+(f1.dep_time-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone+1.5)/24) and (trunc(s1.dep_date)+(f1.dep_time-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone+5)/24) >= (trunc(s2.dep_date)+(f2.dep_time-trunc(f2.dep_time)))") 
+        curs.execute("select s1.flightno, s2.flightno, to_char(s1.dep_date,'DD-MM-YYYY'), to_char(s2.dep_date,'DD-MM-YYYY') from sch_flights s1, sch_flights s2, flights f1, flights f2, airports a1, airports a2 where f1.src=a1.acode and f1.dst=a2.acode and s1.flightno = f1.flightno and s2.flightno = f2.flightno and f1.dst=f2.src and f1.src ='"+src+"' and f2.dst='"+dst+"' and to_char(s1.dep_date,'DD-MM-YYYY')='"+dep_date+"' and (trunc(s2.dep_date)+(f2.dep_time-trunc(f2.dep_time))) >= (trunc(s1.dep_date)+(f1.dep_time-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone+1)/24) and (trunc(s1.dep_date)+(f1.dep_time-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone+24)/24) >= (trunc(s2.dep_date)+(f2.dep_time-trunc(f2.dep_time)))") 
         
         # adds all flight combinations to a list 
         for row in curs:
