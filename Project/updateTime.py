@@ -10,7 +10,7 @@ def updateTime (connectionString, changeType):
     # Gets the flight number.
     validInput = False
     while not(validInput):
-        flightNo = input("Enter the flight number: ")
+        flightNo = input("Enter the flight number: ").strip()
         if len(flightNo) > 6:
             print("Invalid entry for flight number: ")
         else:
