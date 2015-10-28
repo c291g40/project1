@@ -10,7 +10,7 @@ def updateTime (connectionString, changeType):
     # Gets the flight number.
     validInput = False
     while not(validInput):
-        flightNo = input("Enter the flight number: ")
+        flightNo = input("Enter the flight number: ").strip()
         if len(flightNo) > 6:
             print("Invalid entry for flight number: ")
         else:
@@ -56,7 +56,7 @@ def updateTime (connectionString, changeType):
             curs.execute("UPDATE sch_flights SET act_arr_time = TO_DATE('%s','HH24:MI') WHERE TO_CHAR(dep_date, 'DD-MM-YYYY') = '%s' AND flightno = '%s'" %(newTime,depart_date,flightNo))
         else:
             curs.execute("UPDATE sch_flights SET act_dep_time = TO_DATE('%s','HH24:MI') WHERE TO_CHAR(dep_date, 'DD-MM-YYYY') = '%s' AND flightno = '%s'" %(newTime,depart_date,flightNo))
-        curs.commit()
+        connection.commit()
 
         # Close the connection.
         curs.close
