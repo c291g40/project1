@@ -4,6 +4,23 @@ import cx_Oracle
 import datetime
 import sys
 
+<<<<<<< HEAD
+=======
+# to-do
+# time for second flight within 24 hours
+# !!! correct amount of spacing in display
+
+
+# done
+# check seats>0
+# !!! store return dep_date and fare type
+# !!! print roundtrip flights 
+# use connectstring from main
+# check timezones for display
+# !!! check times of connecting flights so deptime2 > arrtime1 (timezone?)
+# error handling, no flights found etc.
+
+>>>>>>> 844dd1d99a2e04842a3a26acaaed90f82c2c39ac
 # Gets user to enter valid date using datetime. 
 def getDate (dateType):
     validInput = False
@@ -60,7 +77,11 @@ def validAirport (acode, connectionString):
                 airport = airport.upper()
                 if airport in [match[0] for match in matchList]:
                     validInput = True
+<<<<<<< HEAD
                     acode = airport
+=======
+                acode = airport
+>>>>>>> 844dd1d99a2e04842a3a26acaaed90f82c2c39ac
              
         # close the connection
         curs.close
@@ -128,7 +149,11 @@ def searchConnectFlights (src, dst, dep_date,connectionString):
         curs = connection.cursor()
         
         # gets list of flights with one connection from src to dst on dep_date
+<<<<<<< HEAD
         curs.execute("select s1.flightno, s2.flightno, to_char(s1.dep_date,'DD-MM-YYYY'), to_char(s2.dep_date,'DD-MM-YYYY') from sch_flights s1, sch_flights s2, flights f1, flights f2, airports a1, airports a2 where f1.src=a1.acode and f1.dst=a2.acode and s1.flightno = f1.flightno and s2.flightno = f2.flightno and f1.dst=f2.src and f1.src ='"+src+"' and f2.dst='"+dst+"' and to_char(s1.dep_date,'DD-MM-YYYY')='"+dep_date+"' and (trunc(s2.dep_date)+(f2.dep_time-trunc(f2.dep_time))) >= (trunc(s1.dep_date)+(f1.dep_time-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone+1.5)/24) and (trunc(s1.dep_date)+(f1.dep_time-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone+5)/24) >= (trunc(s2.dep_date)+(f2.dep_time-trunc(f2.dep_time)))") 
+=======
+        curs.execute("select s1.flightno, s2.flightno, to_char(s1.dep_date,'DD-MM-YYYY'), to_char(s2.dep_date,'DD-MM-YYYY') from sch_flights s1, sch_flights s2, flights f1, flights f2, airports a1, airports a2 where f1.src=a1.acode and f1.dst=a2.acode and s1.flightno = f1.flightno and s2.flightno = f2.flightno and f1.dst=f2.src and f2.dep_time+(trunc(s2.dep_date)-trunc(f2.dep_time)) > f1.dep_time+(trunc(s1.dep_date)-trunc(f1.dep_time))+(f1.est_dur/60+a2.tzone-a1.tzone)/24 and f1.src ='"+src+"' and f2.dst='"+dst+"' and to_char(s1.dep_date,'DD-MM-YYYY')='"+dep_date+"'") 
+>>>>>>> 844dd1d99a2e04842a3a26acaaed90f82c2c39ac
         
         # adds all flight combinations to a list 
         for row in curs:
@@ -249,8 +274,21 @@ def selectFlights(flightsList, totalFlights):
         else:
             print("Invalid entry, please try again.")
         
+<<<<<<< HEAD
     # extracts flightno, dep_date and fare from connect flight entry
     if len(flightsList[option][9]) == 2:
+=======
+    # extracts flightno, dep_date and fare from direct flight entry
+    if len(flightsList[option][9]) == 1:
+        flightNo = flightsList[option][0]
+        depDate = flightsList[option][9]
+        fare = flightsList[option][10]
+        # returns info in list for booking
+        return([[flightNo,depDate,fare]])
+
+    # extracts flightno, dep_date and fare from connect flight entry
+    elif len(flightsList[option][9]) == 2:
+>>>>>>> 844dd1d99a2e04842a3a26acaaed90f82c2c39ac
         flightNo1,flightNo2 = flightsList[option][0].split("/")
         depDate1 = flightsList[option][9][0]
         fare1 = flightsList[option][10][0]
@@ -258,6 +296,7 @@ def selectFlights(flightsList, totalFlights):
         fare2 = flightsList[option][10][1]
         # returns info in list for booking
         return([[flightNo1,depDate1,fare1],[flightNo2,depDate2,fare2]])
+<<<<<<< HEAD
     # extracts flightno, dep_date and fare from direct flight entry
     else:
         flightNo = flightsList[option][0]
@@ -265,6 +304,8 @@ def selectFlights(flightsList, totalFlights):
         fare = flightsList[option][10]
         # returns info in list for booking
         return([[flightNo,depDate,fare]])
+=======
+>>>>>>> 844dd1d99a2e04842a3a26acaaed90f82c2c39ac
 
 def main (connectionString):
 
