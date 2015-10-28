@@ -66,7 +66,10 @@ class main:
 	#this processes the menu selection from the user
 	def processMenuSelection(self, menuItem, splashScreen):
 		if(menuItem ==1):
-			search.main(self.email, self.connectionString)
+			flightsList = search.main(self.connectionString)
+			if len(flightsList) > 0:
+				book = booking.Booking(self.connectionString)
+				book.bookFromSearchResults(self.email,flightsList)
 			return True
 		elif(menuItem ==2):
 			book = booking.Booking(self.connectionString)
@@ -145,7 +148,4 @@ elif(dbType =='m'):
 else:
 	program.connectionString = dbUserName + "/" +dbPassword + "@gwynne.cs.ualberta.ca:1521/CRS"
 
-program.start()				
-
-			
-	
+program.start()	

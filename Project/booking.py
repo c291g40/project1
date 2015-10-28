@@ -78,7 +78,11 @@ class Booking:
 		else:
 			self.book1Way(email)
 		
+		
 
+		
+	
+		
 	#checks to see if the flight is a two way flight (TRUE) or 1 way (FALSE)
 	def is2WayFlight(self): 
 		isTwoWay=False
@@ -113,8 +117,6 @@ class Booking:
 		
 		
 	def book2WayFromSelection(self, email, FlightNo1, depDate1, fare1,FlightNo2, depDate2, fare2):
-		#departure = input("Please input the depature date (DD-MM-YYYY):")
-		#depDate = datetime.datetime(int(departure[6:10]), int(departure[3:5]), int(departure[0:2]))
 		userName = input("Please input the name of the passenger:")
 		country = ""
 		
@@ -418,3 +420,57 @@ class Booking:
 			
 		return userInput
 			
+
+	#this is for selection from a list. This will not commit and thus keeps with specs		
+	def bookAFlight(self,userName, email,flightNo, depDate, fareType, curs ):
+		#this searches for the price of a ticket. if the booking is still available in that fare it will return a price, else nothing.
+		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) FROM sch_flights s, flight_fares f WHERE s.flightno=f.flightno and s.dep_Date=:u_depDate and TRIM(s.flightno)=:u_flightno group by fare)"
+
+		#update table queries
+		UpdateTicketsQuery = "INSERT INTO tickets VALUES(:u_ticketNum, :u_name, :u_email, :u_price)"
+		UpdateBookingsQuery = "INSERT INTO bookings VALUES (:u_ticketNum, :u_flightno, :u_fare, :u_depDate, null)"
+		
+		#connection and launch of search
+		curs.execute(searchQuery, u_fare=fareType,u_depDate=depDate, u_flightno=flightNo)
+		rows = curs.fetchone()
+		
+		#If seat is available at selected fare, update tables and commits
+		if (curs.rowcount>0):
+			price = rows[0]
+			ticketNum = self.getTicketNum(curs)	
+			curs.execute(UpdateTicketsQuery,u_ticketNum = ticketNum, u_name=userName, u_email=email, u_price = price)
+			curs.execute(UpdateBookingsQuery,u_ticketNum = ticketNum, u_flightno=flightNo, u_fare=fareType, u_depDate=depDate)
+			print("\nFLight number %s has been booked. Your Ticket Number is %s" %(flightNo,ticketNum))
+			return 1
+		#if tickets sold out.
+		else:
+			print("\nWe were unable to book your flight. The seats in the requested fare are sold out for flight %s." %flightNo)
+			return 0		
+	
+	def bookFromSearchResults(self,email,flightsList):		
+		flightStatus = 1
+		
+		userName = input("Please input the name of the passenger:")
+		country = ""
+		
+		#checks to see if a user is in the passenger list,if not a passenger it will add it to the database
+		if(self.isUserAPassenger(userName,email)==False):
+			country = input("\nPassenger is not found. Please input the passenger's country of residence:")
+			self.addUserToPassengerList(userName, email, country)
+		
+		#connect to SQL and execute query.
+		connection = cx_Oracle.connect(self.connectionString)
+		curs = connection.cursor()
+		
+		#Do some stuff here  (Maybe a while or for loop with different arrays for flightNo, depDate, and fareType?. Break once flightStatus is False)
+		for flight in flightsList:
+			flightNo = flight[0]
+			depDate = datetime.datetime(int(flight[1][6:10]), int(flight[1][3:5]), int(flight[1][0:2]))
+			fareType = flight[2]
+			flightStatus = flightStatus * self.bookAFlight(userName, email, flightNo, depDate, fareType, curs)
+		
+		if (flightStatus == 1):
+			connection.commit()
+		curs.close()
+		connection.close()
+		
