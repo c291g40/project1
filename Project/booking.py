@@ -169,7 +169,7 @@ class Booking:
 		price1 =0
 		price2 =0
 		#this searches for the price of a ticket. if the booking is still available in that fare it will return a price, else nothing.
-		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) FROM sch_flights s, flight_fares f WHERE s.flightno=f.flightno and s.dep_Date=:u_date and TRIM(s.flightno)=:u_flightno group by fare)"
+		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) from bookings where TRIM(flightno)=:u_flightno and TRIM(fare)=:u_fare and dep_Date=:u_date)"
 
 		#update table queries
 		UpdateTicketsQuery = "INSERT INTO tickets VALUES(:u_ticketNum, :u_name, :u_email, :u_price)"
@@ -218,7 +218,7 @@ class Booking:
 	#This books a flight
 	def bookFlight(self, userName,email, flightNo, fareType, depDate,country):
 		#this searches for the price of a ticket. if the booking is still available in that fare it will return a price, else nothing.
-		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) FROM sch_flights s, flight_fares f WHERE s.flightno=f.flightno and s.dep_Date=:u_date and TRIM(s.flightno)=:u_flightno group by fare)"
+		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) from bookings where TRIM(flightno)=:u_flightno and TRIM(fare)=:u_fare and dep_Date=:u_date)"
 
 		#update table queries
 		UpdateTicketsQuery = "INSERT INTO tickets VALUES(:u_ticketNum, :u_name, :u_email, :u_price)"
@@ -228,7 +228,9 @@ class Booking:
 		connection = cx_Oracle.connect(self.connectionString)
 		curs = connection.cursor()
 		curs.execute(searchQuery, u_fare=fareType, u_date=depDate, u_flightno=flightNo)
+
 		rows = curs.fetchone()
+		print(rows)
 		
 		#If seat is available at selected fare, update tables and commits
 		if (curs.rowcount>0):
@@ -424,7 +426,7 @@ class Booking:
 	#this is for selection from a list. This will not commit and thus keeps with specs		
 	def bookAFlight(self,userName, email,flightNo, depDate, fareType, curs ):
 		#this searches for the price of a ticket. if the booking is still available in that fare it will return a price, else nothing.
-		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) FROM sch_flights s, flight_fares f WHERE s.flightno=f.flightno and s.dep_Date=:u_depDate and TRIM(s.flightno)=:u_flightno group by fare)"
+		searchQuery = "SELECT price FROM flight_fares WHERE Trim(flightno)=:u_flightno and Trim(fare)=:u_fare and limit > ALL (SELECT count(*) from bookings where TRIM(flightno)=:u_flightno and TRIM(fare)=:u_fare and dep_Date=:u_date)"
 
 		#update table queries
 		UpdateTicketsQuery = "INSERT INTO tickets VALUES(:u_ticketNum, :u_name, :u_email, :u_price)"
